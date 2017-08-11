@@ -50,7 +50,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse"
+              "$ref": "#/definitions/RegistrationResponse1"
             }
           },
           "500": {
@@ -86,7 +86,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse"
+              "$ref": "#/definitions/RegistrationResponse2"
             }
           },
           "500": {
@@ -122,7 +122,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse"
+              "$ref": "#/definitions/RegistrationResponse3"
             }
           },
           "500": {
@@ -158,7 +158,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse"
+              "$ref": "#/definitions/RegistrationResponse4"
             }
           },
           "500": {
@@ -194,7 +194,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse"
+              "$ref": "#/definitions/RegistrationResponse5"
             }
           },
           "500": {
@@ -388,28 +388,53 @@
     }
   },
   "definitions": {
-    "User": {
+    "Account": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
-        "first_name": {
-          "type": "string"
-        },
-        "last_name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "gender": {
-          "type": "string"
-        },
-        "ip_address": {
+        "card_no": {
           "type": "string"
         },
         "cash_tag": {
+          "type": "string"
+        },
+        "allocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Allocation"
+          }
+        },
+        "balance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "_id": {
+          "type": "string"
+        }
+      }
+    },
+    "Allocation": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "target_balance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "balance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "start_date": {
+          "type": "string"
+        },
+        "due_date": {
           "type": "string"
         }
       }
@@ -432,7 +457,8 @@
           "type": "string"
         },
         "otp": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -446,7 +472,8 @@
           "type": "string"
         },
         "pin": {
-          "type": "string"
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -475,7 +502,18 @@
         }
       }
     },
-    "RegistrationResponse": {
+    "RegistrationResponse1": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "RegistrationResponse2": {
       "type": "object",
       "properties": {
         "key": {
@@ -486,15 +524,77 @@
         },
         "otp_confirmed": {
           "type": "boolean"
+        }
+      }
+    },
+    "RegistrationResponse3": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
         },
         "pin_set": {
           "type": "boolean"
+        }
+      }
+    },
+    "RegistrationResponse4": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
         },
         "cash_tag_set": {
           "type": "boolean"
+        }
+      }
+    },
+    "RegistrationResponse5": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
         },
         "approved": {
           "type": "boolean"
+        },
+        "account": {
+          "$ref": "#/definitions/Account"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "gender": {
+          "type": "string"
+        },
+        "ip_address": {
+          "type": "string"
+        },
+        "cash_tag": {
+          "type": "string"
         }
       }
     }

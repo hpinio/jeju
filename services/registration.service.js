@@ -289,12 +289,41 @@ const approve = (params) => {
                 // registration approved, creating an account from the registration
                 accountsService.create(u_doc.card_no, u_doc.cash_tag)
                   .then((newAccount) => {
-                    resolve({
-                      key: u_doc._id,
-                      token: u_doc.registration_token,
-                      approved: true,
-                      account: newAccount
-                    });
+                    accountsService.getByCardNo(newAccount.card_no)
+                      .then((account) => {
+                        if (account) {
+                          resolve({
+                            key: u_doc._id,
+                            token: u_doc.registration_token,
+                            approved: true,
+                            account: account
+                          });
+                        } else {
+                          reject({
+                            code: 404,
+                            message: 'Account not found.',
+                            error: null
+                          });
+                        }
+                      }, (err) => {
+                        if (err.message) {
+                          reject(err);
+                        } else {
+                          reject({
+                            code: 500,
+                            message: 'Cannot proceed. Something is wrong in the server.',
+                            error: err
+                          });
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                        reject({
+                          code: 500,
+                          message: 'Cannot proceed. Something is wrong in the server.',
+                          error: error
+                        });
+                      });
                   }, (err) => {
                     if (err.message) {
                       reject(err);

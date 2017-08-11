@@ -52,6 +52,34 @@ const create = (card_no, cash_tag) => {
 };
 
 
+// GET BY CARDNO
+const getByCardNo = (cardNo) => {
+  return new Promise((resolve, reject) => {
+    db
+      .findOne({
+        card_no: cardNo
+      })
+      .exec((err, doc) => {
+        if (err) {
+          reject(err);
+        } else {
+          if (doc) {
+            // create the model from DB for further processng. 
+            // WHY? to make sure model has correct properties mapped from DB
+            let m_doc = mapper.account_dto_from_db(doc);
+            resolve(m_doc);
+          } else {
+            reject({
+              code: 404,
+              message: 'Invalid account.',
+              error: null
+            });
+          }
+        }
+      });
+  });
+};
+
 // GET BY ID
 const getById = (id) => {
   return new Promise((resolve, reject) => {
@@ -238,6 +266,7 @@ const updateAllocation = (id, allocationJson) => {
 // EXPOSE PUBLIC
 const Service = {
   getById: getById,
+  getByCardNo: getByCardNo,
   addAllocation: addAllocation,
   updateAllocation: updateAllocation,
   create: create,
