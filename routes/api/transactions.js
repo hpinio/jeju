@@ -9,7 +9,7 @@ router.post('/', (req, res, next) => {
     .then(transaction => {
       if (transaction) {
         res.json({
-          d: 'OK'
+          d: transaction
         });
       } else {
         res.send(500).send({

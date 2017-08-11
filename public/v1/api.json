@@ -13,12 +13,97 @@
     {
       "name": "accounts",
       "description": "[WIP] Operations related to Accounts"
+    },
+    {
+      "name": "transactions",
+      "description": "Operations related to transactions"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
+    "/transactions": {
+      "post": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Transfer amount from a cash tag to another cash tag",
+        "description": "",
+        "operationId": "transfer",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters of transaction to allocation category",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Transaction"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/TransactionHistory"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/accounts/{id}/allocations/transactions": {
+      "post": {
+        "tags": [
+          "transactions",
+          "accounts"
+        ],
+        "summary": "Transfer amount to allocation category",
+        "description": "",
+        "operationId": "allocate",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "id",
+            "in": "path",
+            "description": "Id for getting an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters of transaction to allocation category",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AllocationTransaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Account"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/accounts": {
       "post": {
         "tags": [
@@ -391,6 +476,39 @@
     }
   },
   "definitions": {
+    "TransactionHistory": {
+      "type": "object",
+      "properties": {
+        "source_cash_tag": {
+          "type": "string"
+        },
+        "destination_cash_tag": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "transaction_date": {
+          "format": "string"
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "Account": {
       "type": "object",
       "properties": {
@@ -466,6 +584,19 @@
         },
         "due_date": {
           "type": "string"
+        }
+      }
+    },
+    "AllocationTransaction": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },

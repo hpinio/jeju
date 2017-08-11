@@ -32,7 +32,8 @@ const transfer = (sourceCashTag, destinationCashTag, amount) => {
         return global.db.insert(db, d_transaction);
       })
       .then(newTransaction => {
-        resolve(newTransaction);
+        let m_transaction = mapper.transaction_dto_from_db(newTransaction);
+        resolve(m_transaction);
       })
       .catch(err => {
         reject(err);
