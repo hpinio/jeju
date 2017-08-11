@@ -26,6 +26,24 @@ const allocation_dto_from_db = (dbDoc) => {
   return allocation;
 };
 
+const allocation_db_from_dto = (json) => {
+  let allocation = {
+    type: 0,
+    category: 0,
+    target_balance: 0,
+    balance: 0,
+    start_date: moment().format(),
+    due_date: moment().format()
+  };
+  allocation.type = json.type.id;
+  allocation.category = json.category.id;
+  allocation.target_balance = json.target_balance;
+  allocation.balance = json.balance;
+  allocation.start_date = moment(json.start_date, global.DATE_FORMAT).format();
+  allocation.due_date = moment(json.due_date, global.DATE_FORMAT).format();
+  return allocation;
+};
+
 const allocation_db = () => {
   let allocation = {
     type: 0,
@@ -54,11 +72,34 @@ const account_dto_from_db = (dbDoc) => {
   if (dbDoc.allocations && dbDoc.allocations.length) {
     for (let index = 0; index < dbDoc.allocations.length; index++) {
       let allocation = dbDoc.allocations[index];
-      let m_allocation = allocation_schema_from_db(allocation);
+      let m_allocation = allocation_dto_from_db(allocation);
       account.allocations.push(m_allocation);
     }
   }
   account._id = dbDoc._id;
+  return account;
+};
+
+const account_db_from_dto = (json) => {
+  let account = {
+    card_no: 0,
+    cash_tag: '',
+    allocations: [],
+    balance: 0,
+  };
+  account.card_no = json.card_no;
+  account.cash_tag = json.cash_tag;
+  account.balance = json.balance;
+  if (json.allocations && json.allocations.length) {
+    for (let index = 0; index < json.allocations.length; index++) {
+      let allocation = json.allocations[index];
+      let d_allocation = allocation_db_from_dto(allocation);
+      account.allocations.push(d_allocation);
+    }
+  }
+  if (json.hasOwnProperty('_id')) {
+    account._id = json._id;
+  }
   return account;
 };
 
@@ -72,9 +113,23 @@ const account_db = () => {
   return account;
 };
 
+
+const allocation_history_db = () => {
+  let history = {
+    category: 0,
+    amount: 0,
+    transaction_date: moment().format(),
+  };
+  return history;
+};
+
+
 module.exports = {
   allocation_db: allocation_db,
+  allocation_db_from_dto: allocation_db_from_dto,
   allocation_dto_from_db: allocation_dto_from_db,
   account_db: account_db,
+  account_db_from_dto: account_db_from_dto,
   account_dto_from_db: account_dto_from_db,
+  allocation_history_db: allocation_history_db,
 };

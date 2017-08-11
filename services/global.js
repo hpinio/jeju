@@ -57,6 +57,18 @@ const findAccountAllocationCategoryById = (account, category) => {
   return found;
 };
 
+const findIndexOfAccountAllocationCategoryById = (account, category) => {
+  let found = -1;
+  for (let index = 0; index < account.allocations.length; index++) {
+    let allocation = account.allocations[index];
+    if (allocation.category === category) {
+      found = index;
+      break;
+    }
+  }
+  return found;
+};
+
 const findAllocationCategoryById = (category) => {
   let found = null;
   for (let index = 0; index < allocation_categories.length; index++) {
@@ -150,6 +162,22 @@ const dbUpdate = (db, query, u_doc) => {
   });
 };
 
+const dbDelete = (db, query) => {
+  return new Promise((resolve, reject) => {
+    db.remove(query, {}, (err, numRemoved) => {
+      if (err) {
+        reject({
+          code: 500,
+          message: 'Server Error',
+          error: err
+        });
+      } else {
+        resolve(numRemoved);
+      }
+    });
+  });
+};
+
 
 module.exports = {
   DATE_FORMAT: DATE_FORMAT,
@@ -157,6 +185,7 @@ module.exports = {
   allocation_types: allocation_types,
   fn: {
     findAccountAllocationCategoryById: findAccountAllocationCategoryById,
+    findIndexOfAccountAllocationCategoryById: findIndexOfAccountAllocationCategoryById,
     findAllocationCategoryById: findAllocationCategoryById,
     findAllocationTypeById: findAllocationTypeById,
   },
@@ -165,5 +194,6 @@ module.exports = {
     findOne: dbFindOne,
     insert: dbInsert,
     update: dbUpdate,
+    delete: dbDelete,
   }
 };
