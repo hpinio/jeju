@@ -279,6 +279,9 @@ router.get('/', (req, res, next) => {
       res.status(500).send({
         error: err
       });
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
 
@@ -298,6 +301,9 @@ router.get('/:id', (req, res, next) => {
       res.status(500).send({
         error: err
       });
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
 
@@ -311,6 +317,9 @@ router.post('/', (req, res, next) => {
       });
     }, (err) => {
       res.status(err.code).send(err);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
 
@@ -325,6 +334,9 @@ router.put('/:id', (req, res, next) => {
       });
     }, (err) => {
       res.status(err.code).send(err);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
 
@@ -338,6 +350,9 @@ router.delete('/:id', (req, res, next) => {
       });
     }, (err) => {
       res.status(err.code).send(err);
+    })
+    .catch((error) => {
+      console.log(error);
     });
 });
 

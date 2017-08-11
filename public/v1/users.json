@@ -5,21 +5,204 @@
     "version": "1.0.0",
     "title": "Jenius Junior"
   },
-  "host": "localhost:1337",
   "basePath": "/api",
   "tags": [{
-      "name": "users",
-      "description": "Operations about users"
+      "name": "registration",
+      "description": "Operations for registration"
     },
     {
       "name": "accounts",
-      "description": "Operations related to Accounts"
+      "description": "[WIP] Operations related to Accounts"
+    },
+    {
+      "name": "users",
+      "description": "Operations about users (this is only an example)"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
+    "/registration": {
+      "post": {
+        "tags": [
+          "registration"
+        ],
+        "summary": "Create a new registration, used as first step to create a registration session.",
+        "description": "",
+        "operationId": "createRegistration",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for creating registration.",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Registration1"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RegistrationResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/registration/otp_confirmation": {
+      "post": {
+        "tags": [
+          "registration"
+        ],
+        "summary": "Create an OTP confirmation for a registration.",
+        "description": "",
+        "operationId": "confirmOTP",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for OTP confirmation.",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Registration2"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RegistrationResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/registration/pin": {
+      "post": {
+        "tags": [
+          "registration"
+        ],
+        "summary": "Create a registration PIN for a registration.",
+        "description": "",
+        "operationId": "createPIN",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for creating PIN.",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Registration3"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RegistrationResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/registration/cash_tag": {
+      "post": {
+        "tags": [
+          "registration"
+        ],
+        "summary": "Create a cash tag for a registration.",
+        "description": "",
+        "operationId": "createCashTag",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for creating cash tag.",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Registration4"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RegistrationResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/registration/approval": {
+      "post": {
+        "tags": [
+          "registration"
+        ],
+        "summary": "Approve a registration.",
+        "description": "",
+        "operationId": "approveRegistration",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for approving a registration.",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/ApproveRegistration"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/RegistrationResponse"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/users": {
       "get": {
         "tags": [
@@ -65,8 +248,8 @@
           "application/json"
         ],
         "parameters": [{
-          "in": "body",
           "name": "body",
+          "in": "body",
           "description": "Created user object",
           "required": true,
           "schema": {
@@ -228,6 +411,90 @@
         },
         "cash_tag": {
           "type": "string"
+        }
+      }
+    },
+    "Registration1": {
+      "type": "object",
+      "properties": {
+        "card_no": {
+          "type": "string"
+        }
+      }
+    },
+    "Registration2": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "otp": {
+          "type": "string"
+        }
+      }
+    },
+    "Registration3": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "pin": {
+          "type": "string"
+        }
+      }
+    },
+    "Registration4": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "cash_tag": {
+          "type": "string"
+        }
+      }
+    },
+    "ApproveRegistration": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "RegistrationResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "otp_confirmed": {
+          "type": "boolean"
+        },
+        "pin_set": {
+          "type": "boolean"
+        },
+        "cash_tag_set": {
+          "type": "boolean"
+        },
+        "approved": {
+          "type": "boolean"
         }
       }
     }
