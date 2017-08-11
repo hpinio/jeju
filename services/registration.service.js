@@ -4,6 +4,7 @@ const moment = require('moment');
 const crypto = require('crypto');
 const accountsMapper = require('./accounts.mapper');
 const accountsService = require('./accounts.service');
+const global = require('./global');
 
 
 // DB
@@ -41,320 +42,247 @@ const schema = (json) => {
 };
 
 
+const createToken = () => {
+  return new Promise((resolve, reject) => {
+    crypto.randomBytes(48, function (err, buffer) {
+      if (err) {
+        reject({
+          code: 500,
+          message: 'Error Generating Token.',
+          error: err
+        });
+      } else {
+        const token = buffer.toString('hex');
+        resolve(token);
+      }
+    });
+  });
+};
+
+
 const create = (cardNo) => {
   return new Promise((resolve, reject) => {
     let registration = schema(null);
     registration.card_no = cardNo;
 
-    // find existing card
-    db.find({
-      card_no: cardNo
-    }, (err, doc) => {
-      // card found
-      if (!err && doc && doc.length) {
-        reject({
-          code: 500,
-          message: 'Card number has been registered.',
-          error: err
-        });
-      } else if (!err && !(doc && doc.length)) { // card not found
-        // create registration_token
-        crypto.randomBytes(48, function (err, buffer) {
-          if (err) {
-            reject({
-              code: 500,
-              message: 'Cannot insert data. Something is wrong in the server.',
-              error: err
-            });
-          } else {
-            const token = buffer.toString('hex');
-            registration.registration_token = token;
+    global.db
+      .findOne(db, {
+        card_no: cardNo
+      })
+      .then(registration => {
+        // card found
+        if (registration) {
+          reject({
+            code: 500,
+            message: 'Card number has been registered.',
+            error: 'FOUND'
+          });
+        } else { // card not found
+          return createToken();
+        }
+      })
+      .then(token => {
+        // set token
+        registration.registration_token = token;
 
-            // create OTP 
-            const otp = Math.floor(1000 + Math.random() * 9000);
-            registration.current_otp = otp;
+        // create OTP 
+        const otp = Math.floor(1000 + Math.random() * 9000);
+        registration.current_otp = otp;
 
-            // insert new registration
-            db.insert(registration, (err, newRegistration) => {
-              if (err) {
-                reject({
-                  code: 500,
-                  message: 'Cannot insert data. Something is wrong in the server.',
-                  error: err
-                });
-              } else {
-                resolve({
-                  key: newRegistration._id,
-                  token: newRegistration.registration_token
-                });
-              }
-            });
-          }
+        // insert
+        return global.db.insert(db, registration);
+      })
+      .then(newRegistration => {
+        resolve({
+          key: newRegistration._id,
+          token: newRegistration.registration_token
         });
-      } else { // something else
-        reject({
-          code: 500,
-          message: 'Cannot insert data. Something is wrong in the server.',
-          error: null
-        });
-      }
-    });
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
 
 const confirmOTP = (params) => {
   return new Promise((resolve, reject) => {
-    db.findOne({
-      _id: params._id,
-      registration_token: params.registration_token
-    }, (err, doc) => {
-      if (err) {
-        reject({
-          code: 500,
-          message: 'Something is wrong in the server.',
-          error: err
-        });
-      } else {
-        if (doc) {
+    global.db.findOne(db, {
+        _id: params._id,
+        registration_token: params.registration_token
+      })
+      .then(registration => {
+        if (registration) {
           // check if otp match, if not return error
-          if (doc.current_otp === params.current_otp) {
-            let u_doc = Object.assign({}, doc);
-            u_doc.otp_confirmed = true;
+          if (registration.current_otp === params.current_otp) {
+            let u_registration = Object.assign({}, registration);
+            u_registration.otp_confirmed = true;
 
-            db.update(doc, u_doc, {}, (err, numberOfUpdated) => {
-              if (err) {
-                reject({
-                  code: 500,
-                  message: 'Cannot update data. Something is wrong in the server.',
-                  error: err
-                });
-              } else {
-                resolve({
-                  key: u_doc._id,
-                  token: u_doc.registration_token,
-                  otp_confirmed: true
-                });
-              }
-            });
+            // update
+            return global.db.update(db, registration, u_registration);
           } else {
             reject({
               code: 500,
-              message: 'Invalid OTP.',
-              error: null
+              message: 'Invalid OTP',
+              error: 'INVALID OTP'
             });
           }
         } else {
           reject({
             code: 404,
-            message: 'Invalid registration.',
-            error: null
+            message: 'Not a Registration',
+            error: 'NOT FOUND'
           });
         }
-      }
-    });
+      })
+      .then(updatedRegistration => {
+        resolve({
+          key: updatedRegistration._id,
+          token: updatedRegistration.registration_token,
+          otp_confirmed: true
+        });
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
 
 const setPIN = (params) => {
   return new Promise((resolve, reject) => {
-    db.findOne({
-      _id: params._id,
-      registration_token: params.registration_token
-    }, (err, doc) => {
-      if (err) {
-        reject({
-          code: 500,
-          message: 'Something is wrong in the server.',
-          error: err
-        });
-      } else {
-        if (doc) {
-          let u_doc = Object.assign({}, doc);
-          u_doc.pin = params.pin
+    global.db.findOne(db, {
+        _id: params._id,
+        registration_token: params.registration_token
+      })
+      .then(registration => {
+        if (registration) {
+          // set pin
+          let u_registration = Object.assign({}, registration);
+          u_registration.pin = params.pin
 
-          db.update(doc, u_doc, {}, (err, numberOfUpdated) => {
-            if (err) {
-              reject({
-                code: 500,
-                message: 'Cannot update data. Something is wrong in the server.',
-                error: err
-              });
-            } else {
-              resolve({
-                key: u_doc._id,
-                token: u_doc.registration_token,
-                pin_set: true
-              });
-            }
-          });
+          // update
+          return global.db.update(db, registration, u_registration);
         } else {
           reject({
             code: 404,
-            message: 'Invalid registration.',
-            error: null
+            message: 'Not a Registration',
+            error: 'NOT FOUND'
           });
         }
-      }
-    });
+      })
+      .then(updatedRegistration => {
+        resolve({
+          key: updatedRegistration._id,
+          token: updatedRegistration.registration_token,
+          pin_set: true
+        });
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
 
 const setCashTag = (params) => {
   return new Promise((resolve, reject) => {
-    db.findOne({
-      _id: params._id,
-      registration_token: params.registration_token
-    }, (err, doc) => {
-      if (err) {
-        reject({
-          code: 500,
-          message: 'Something is wrong in the server.',
-          error: err
-        });
-      } else {
-        if (doc) {
-          let u_doc = Object.assign({}, doc);
-          u_doc.cash_tag = params.cash_tag
+    global.db.findOne(db, {
+        _id: params._id,
+        registration_token: params.registration_token
+      })
+      .then(registration => {
+        if (registration) {
+          // set cash tag
+          let u_registration = Object.assign({}, registration);
+          u_registration.cash_tag = params.cash_tag
 
-          db.update(doc, u_doc, {}, (err, numberOfUpdated) => {
-            if (err) {
-              reject({
-                code: 500,
-                message: 'Cannot update data. Something is wrong in the server.',
-                error: err
-              });
-            } else {
-              resolve({
-                key: u_doc._id,
-                token: u_doc.registration_token,
-                cash_tag_set: true
-              });
-            }
-          });
+          // update
+          return global.db.update(db, registration, u_registration);
         } else {
           reject({
             code: 404,
-            message: 'Invalid registration.',
-            error: null
+            message: 'Not a Registration',
+            error: 'NOT FOUND'
           });
         }
-      }
-    });
+      })
+      .then(updatedRegistration => {
+        resolve({
+          key: updatedRegistration._id,
+          token: updatedRegistration.registration_token,
+          cash_tag_set: true
+        });
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 
 
 const approve = (params) => {
   return new Promise((resolve, reject) => {
-    db.findOne({
-      _id: params._id,
-      registration_token: params.registration_token
-    }, (err, doc) => {
-      if (err) {
-        reject({
-          code: 500,
-          message: 'Something is wrong in the server.',
-          error: err
-        });
-      } else {
-        if (doc) {
+    global.db.findOne(db, {
+        _id: params._id,
+        registration_token: params.registration_token
+      })
+      .then(registration => {
+        if (!registration) {
+          reject({
+            code: 404,
+            message: 'Not a Registration',
+            error: 'NOT FOUND'
+          });
+        } else {
           // should validate the registration first
           let valid = true;
-          valid = valid && doc.card_no && doc.card_no > 0;
-          valid = valid && doc.current_otp && doc.otp_confirmed;
-          valid = valid && doc.pin && doc.pin > 0;
-          valid = valid && doc.cash_tag && doc.cash_tag.length > 0;
+          valid = valid && registration.card_no && registration.card_no > 0;
+          valid = valid && registration.current_otp && registration.otp_confirmed;
+          valid = valid && registration.pin && registration.pin > 0;
+          valid = valid && registration.cash_tag && registration.cash_tag.length > 0;
 
           if (!valid) {
             reject({
               code: 500,
-              message: 'Cannot approve registration. Registration is invalid.',
-              error: null
+              message: 'Invalid registration data',
+              error: 'INVALID'
             });
           } else {
-            let u_doc = Object.assign({}, doc);
-            u_doc.approved = true;
+            let u_registration = Object.assign({}, registration);
+            u_registration.approved = true;
 
-            db.update(doc, u_doc, {}, (err, numberOfUpdated) => {
-              if (err) {
-                reject({
-                  code: 500,
-                  message: 'Cannot update data. Something is wrong in the server.',
-                  error: err
-                });
-              } else {
-                // registration approved, creating an account from the registration
-                accountsService.create(u_doc.card_no, u_doc.cash_tag)
-                  .then((newAccount) => {
-                    accountsService.getByCardNo(newAccount.card_no)
-                      .then((account) => {
-                        if (account) {
-                          resolve({
-                            key: u_doc._id,
-                            token: u_doc.registration_token,
-                            approved: true,
-                            account: account
-                          });
-                        } else {
-                          reject({
-                            code: 404,
-                            message: 'Account not found.',
-                            error: null
-                          });
-                        }
-                      }, (err) => {
-                        if (err.message) {
-                          reject(err);
-                        } else {
-                          reject({
-                            code: 500,
-                            message: 'Cannot proceed. Something is wrong in the server.',
-                            error: err
-                          });
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                        reject({
-                          code: 500,
-                          message: 'Cannot proceed. Something is wrong in the server.',
-                          error: error
-                        });
-                      });
-                  }, (err) => {
-                    if (err.message) {
-                      reject(err);
-                    } else {
-                      reject({
-                        code: 500,
-                        message: 'Cannot proceed. Something is wrong in the server.',
-                        error: err
-                      });
-                    }
-                  })
-                  .catch((error) => {
-                    console.log(error);
-                    reject({
-                      code: 500,
-                      message: 'Cannot proceed. Something is wrong in the server.',
-                      error: error
-                    });
-                  });
-              }
-            });
+            // update
+            return global.db.update(db, registration, u_registration);
           }
+        }
+      })
+      .then(updatedRegistration => {
+        // registration approved, creating an account from the registration
+        return accountsService.create(updatedRegistration.card_no, updatedRegistration.cash_tag);
+      })
+      .then(newAccount => {
+        return accountsService.getByCardNo(newAccount.card_no);
+      })
+      .then(account => {
+        if (account) {
+          resolve({
+            key: params._id,
+            token: params.registration_token,
+            approved: true,
+            account: account
+          });
         } else {
           reject({
             code: 404,
-            message: 'Invalid registration.',
-            error: null
+            message: 'Account not found',
+            error: 'NOT FOUND'
           });
         }
-      }
-    });
+      })
+      .catch(err => {
+        reject(err);
+      });
   });
 };
 

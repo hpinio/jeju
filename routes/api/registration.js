@@ -11,15 +11,14 @@ router.post('/', (req, res, next) => {
 
   let cardNo = req.body.card_no;
   registrationService.create(cardNo)
-    .then((registration) => {
+    .then(registration => {
       res.json({
         d: registration
       });
-    }, (err) => {
-      res.status(err.code).send(err);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
+      res.status(err.code).send(err);
     });
 });
 
@@ -39,15 +38,14 @@ router.post('/otp_confirmation', (req, res, next) => {
       registration_token: token,
       current_otp: parseInt(otp, 10)
     })
-    .then((registration) => {
+    .then(registration => {
       res.json({
         d: registration
       });
-    }, (err) => {
-      res.status(err.code).send(err);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
+      res.status(err.code).send(err);
     });
 });
 
@@ -68,15 +66,14 @@ router.post('/pin', (req, res, next) => {
       registration_token: token,
       pin: parseInt(pin, 10)
     })
-    .then((registration) => {
+    .then(registration => {
       res.json({
         d: registration
       });
-    }, (err) => {
-      res.status(err.code).send(err);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
+      res.status(err.code).send(err);
     });
 });
 
@@ -96,15 +93,14 @@ router.post('/cash_tag', (req, res, next) => {
       registration_token: token,
       cash_tag: cash_tag
     })
-    .then((registration) => {
+    .then(registration => {
       res.json({
         d: registration
       });
-    }, (err) => {
-      res.status(err.code).send(err);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
+      res.status(err.code).send(err);
     });
 });
 
@@ -122,15 +118,14 @@ router.post('/approval', (req, res, next) => {
       _id: key,
       registration_token: token,
     })
-    .then((registration) => {
+    .then(registration => {
       res.json({
         d: registration
       });
-    }, (err) => {
-      res.status(err.code).send(err);
     })
-    .catch((error) => {
-      console.log(error);
+    .catch(err => {
+      console.log(err);
+      res.status(err.code).send(err);
     });
 });
 
