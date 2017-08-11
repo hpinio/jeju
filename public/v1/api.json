@@ -39,14 +39,14 @@
           "description": "Parameters for creating registration.",
           "required": true,
           "schema": {
-            "$ref": "#/definitions/Registration1"
+            "$ref": "#/definitions/CreateRegistration"
           }
         }],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse1"
+              "$ref": "#/definitions/CreateRegistrationResponse"
             }
           },
           "500": {
@@ -75,14 +75,14 @@
           "description": "Parameters for OTP confirmation.",
           "required": true,
           "schema": {
-            "$ref": "#/definitions/Registration2"
+            "$ref": "#/definitions/OTPConfirmation"
           }
         }],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse2"
+              "$ref": "#/definitions/OTPConfirmationResponse"
             }
           },
           "500": {
@@ -111,14 +111,14 @@
           "description": "Parameters for creating PIN.",
           "required": true,
           "schema": {
-            "$ref": "#/definitions/Registration3"
+            "$ref": "#/definitions/SetPIN"
           }
         }],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse3"
+              "$ref": "#/definitions/SetPINResponse"
             }
           },
           "500": {
@@ -147,14 +147,14 @@
           "description": "Parameters for creating cash tag.",
           "required": true,
           "schema": {
-            "$ref": "#/definitions/Registration4"
+            "$ref": "#/definitions/SetCashTag"
           }
         }],
         "responses": {
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse4"
+              "$ref": "#/definitions/SetCashTagResponse"
             }
           },
           "500": {
@@ -190,7 +190,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/RegistrationResponse5"
+              "$ref": "#/definitions/ApproveRegistrationResponse"
             }
           },
           "500": {
@@ -252,7 +252,7 @@
         }
       }
     },
-    "Registration1": {
+    "CreateRegistration": {
       "type": "object",
       "properties": {
         "card_no": {
@@ -260,7 +260,7 @@
         }
       }
     },
-    "Registration2": {
+    "OTPConfirmation": {
       "type": "object",
       "properties": {
         "key": {
@@ -275,7 +275,7 @@
         }
       }
     },
-    "Registration3": {
+    "SetPIN": {
       "type": "object",
       "properties": {
         "key": {
@@ -290,7 +290,7 @@
         }
       }
     },
-    "Registration4": {
+    "SetCashTag": {
       "type": "object",
       "properties": {
         "key": {
@@ -315,7 +315,7 @@
         }
       }
     },
-    "RegistrationResponse1": {
+    "CreateRegistrationResponse": {
       "type": "object",
       "properties": {
         "key": {
@@ -326,7 +326,7 @@
         }
       }
     },
-    "RegistrationResponse2": {
+    "OTPConfirmationResponse": {
       "type": "object",
       "properties": {
         "key": {
@@ -340,7 +340,7 @@
         }
       }
     },
-    "RegistrationResponse3": {
+    "SetPINResponse": {
       "type": "object",
       "properties": {
         "key": {
@@ -354,7 +354,7 @@
         }
       }
     },
-    "RegistrationResponse4": {
+    "SetCashTagResponse": {
       "type": "object",
       "properties": {
         "key": {
@@ -368,7 +368,7 @@
         }
       }
     },
-    "RegistrationResponse5": {
+    "ApproveRegistrationResponse": {
       "type": "object",
       "properties": {
         "key": {
