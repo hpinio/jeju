@@ -99,7 +99,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Card"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Card"
+                }
+              }
             }
           },
           "500": {
@@ -151,9 +156,14 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/TransactionHistory"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/TransactionHistory"
+                  }
+                }
               }
             }
           },
@@ -188,7 +198,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/TransactionHistory"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/TransactionHistory"
+                }
+              }
             }
           },
           "500": {
@@ -222,9 +237,14 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AllocationHistory"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AllocationHistory"
+                  }
+                }
               }
             }
           },
@@ -259,9 +279,14 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/AllocationHistory"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AllocationHistory"
+                  }
+                }
               }
             }
           },
@@ -313,7 +338,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -349,7 +379,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -383,7 +418,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -417,7 +457,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -461,7 +506,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -512,7 +562,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -552,7 +607,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/Account"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
             }
           },
           "500": {
@@ -588,7 +648,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/CreateRegistrationResponse"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/CreateRegistrationResponse"
+                }
+              }
             }
           },
           "500": {
@@ -624,7 +689,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/OTPConfirmationResponse"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/OTPConfirmationResponse"
+                }
+              }
             }
           },
           "500": {
@@ -660,7 +730,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/SetPINResponse"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/SetPINResponse"
+                }
+              }
             }
           },
           "500": {
@@ -696,7 +771,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/SetCashTagResponse"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/SetCashTagResponse"
+                }
+              }
             }
           },
           "500": {
@@ -732,7 +812,12 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/ApproveRegistrationResponse"
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/ApproveRegistrationResponse"
+                }
+              }
             }
           },
           "500": {
