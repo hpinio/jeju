@@ -11,7 +11,7 @@ const allocation_dto_from_db = (dbDoc) => {
     target_balance: 0,
     balance: 0,
     start_date: moment().format(global.DATE_FORMAT),
-    due_date: moment().format(global.DATE_FORMAT)
+    due_date: moment().format(global.DATE_FORMAT),
   };
 
   let type = global.fn.findAllocationTypeById(dbDoc.type);
@@ -76,6 +76,7 @@ const account_dto_from_db = (dbDoc) => {
     cash_tag: '',
     allocations: [],
     balance: 0,
+    parent_cash_tag: '',
   };
   account.card_no = dbDoc.card_no;
   account.cash_tag = dbDoc.cash_tag;
@@ -89,6 +90,7 @@ const account_dto_from_db = (dbDoc) => {
     }
   }
   account._id = dbDoc._id;
+  account.parent_cash_tag = dbDoc.parent_cash_tag;
   return account;
 };
 
@@ -98,6 +100,7 @@ const account_db_from_dto = (json) => {
     cash_tag: '',
     allocations: [],
     balance: 0,
+    parent_cash_tag: '',
   };
   account.card_no = json.card_no;
   account.cash_tag = json.cash_tag;
@@ -112,6 +115,7 @@ const account_db_from_dto = (json) => {
   if (json.hasOwnProperty('_id')) {
     account._id = json._id;
   }
+  account.parent_cash_tag = json.parent_cash_tag;
   return account;
 };
 
@@ -121,6 +125,7 @@ const account_db = () => {
     cash_tag: '',
     allocations: [],
     balance: 0,
+    parent_cash_tag: ''
   };
   return account;
 };

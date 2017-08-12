@@ -409,13 +409,13 @@
       }
     },
     "/accounts": {
-      "post": {
+      "get": {
         "tags": [
           "accounts"
         ],
-        "summary": "Create an account.",
+        "summary": "Get accounts",
         "description": "",
-        "operationId": "createAccount",
+        "operationId": "getAccounts",
         "consumes": [
           "application/json"
         ],
@@ -423,13 +423,11 @@
           "application/json"
         ],
         "parameters": [{
-          "name": "body",
-          "in": "body",
-          "description": "Parameters for creating an account",
-          "required": true,
-          "schema": {
-            "$ref": "#/definitions/CreateAccount"
-          }
+          "name": "parent_cash_tag",
+          "in": "query",
+          "description": "Parent cash tag of accounts",
+          "required": false,
+          "type": "string"
         }],
         "responses": {
           "200": {
@@ -438,7 +436,10 @@
               "type": "object",
               "properties": {
                 "d": {
-                  "$ref": "#/definitions/Account"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Account"
+                  }
                 }
               }
             }
@@ -899,6 +900,9 @@
     "Card": {
       "type": "object",
       "properties": {
+        "creator_cash_tag": {
+          "type": "string"
+        },
         "card_no": {
           "type": "string"
         },
@@ -967,6 +971,9 @@
           "format": "int32"
         },
         "_id": {
+          "type": "string"
+        },
+        "parent_cash_tag": {
           "type": "string"
         }
       }

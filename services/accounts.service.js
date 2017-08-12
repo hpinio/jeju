@@ -4,9 +4,13 @@ const mapper = require('./accounts.mapper');
 
 
 // get all accounts
-const getAll = () => {
+const getAll = (filters) => {
   return new Promise((resolve, reject) => {
-    global.dbfn.find(global.db_accounts, {})
+    let query = {};
+    if (filters.parent_cash_tag) {
+      query.parent_cash_tag = filters.parent_cash_tag;
+    }
+    global.dbfn.find(global.db_accounts, query)
       .then(data => {
         let mapped = [];
         data.forEach(d => {

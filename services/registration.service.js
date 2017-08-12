@@ -283,11 +283,13 @@ const approve = (params) => {
       })
       .then(card => {
         let balance = card ? card.initial_balance : 0;
+        let parentCashTag = card ? card.creator_cash_tag : '';
         return global.dbfn.update(global.db_accounts, {
           card_no: createdAccount.card_no
         }, {
           $set: {
-            balance: balance
+            balance: balance,
+            parent_cash_tag: parentCashTag
           }
         });
       })
@@ -317,10 +319,11 @@ const approve = (params) => {
 };
 
 
-const setCardInitialBalance = (cardNo, initialBalance) => {
+const createCard = (cardNo, initialBalance, creatorCashTag) => {
   return new Promise((resolve, reject) => {
     global.dbfn.findOne(global.db_cards, {
-        card_no: cardNo
+        card_no: cardNo,
+        creator_cash_tag: creatorCashTag
       })
       .then(card => {
         if (card) {
@@ -331,7 +334,8 @@ const setCardInitialBalance = (cardNo, initialBalance) => {
         } else {
           let d_card = {
             card_no: cardNo,
-            initial_balance: initialBalance
+            initial_balance: initialBalance,
+            creator_cash_tag: creatorCashTag
           };
           return global.dbfn.insert(global.db_cards, d_card);
         }
@@ -353,7 +357,7 @@ const Service = {
   setPIN: setPIN,
   setCashTag: setCashTag,
   approve: approve,
-  setCardInitialBalance: setCardInitialBalance
+  createCard: createCard
 };
 
 module.exports = Service;

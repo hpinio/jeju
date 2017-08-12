@@ -4,7 +4,11 @@ const accountsService = require('../../services/accounts.service');
 
 
 router.get('/', (req, res, next) => {
-  accountsService.getAll()
+  let parentCashTag = req.query.parent_cash_tag || '';
+  let filters = {
+    parent_cash_tag: parentCashTag,
+  };
+  accountsService.getAll(filters)
     .then(data => {
       res.json({
         d: data
