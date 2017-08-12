@@ -1,3 +1,27 @@
+const neDB = require('nedb');
+const path = require('path');
+
+
+const db_allocations_history = new neDB({
+  filename: path.join('data', 'allocations_history.db'),
+  autoload: true
+});
+const db_registrations = new neDB({
+  filename: path.join('data', 'registrations.db'),
+  autoload: true
+});
+const db_accounts = new neDB({
+  filename: path.join('data', 'accounts.db'),
+  autoload: true
+});
+const db_transactions = new neDB({
+  filename: path.join('data', 'transactions.db'),
+  autoload: true
+});
+
+
+
+
 const allocation_types = [{
     id: 1,
     name: 'Needs'
@@ -164,6 +188,7 @@ const dbFindOne = (db, query) => {
 const dbInsert = (db, doc) => {
   return new Promise((resolve, reject) => {
     db.insert(doc, (err, newDoc) => {
+      db.persistence.compactDatafile();
       if (err) {
         reject({
           code: 500,
@@ -180,6 +205,7 @@ const dbInsert = (db, doc) => {
 const dbUpdate = (db, query, u_doc) => {
   return new Promise((resolve, reject) => {
     db.update(query, u_doc, {}, (err, numberOfUpdated) => {
+      db.persistence.compactDatafile();
       if (err) {
         reject({
           code: 500,
@@ -196,6 +222,7 @@ const dbUpdate = (db, query, u_doc) => {
 const dbDelete = (db, query) => {
   return new Promise((resolve, reject) => {
     db.remove(query, {}, (err, numRemoved) => {
+      db.persistence.compactDatafile();
       if (err) {
         reject({
           code: 500,
@@ -219,6 +246,10 @@ function uuidv4() {
 }
 
 module.exports = {
+  db_accounts: db_accounts,
+  db_registrations: db_registrations,
+  db_allocations_history: db_allocations_history,
+  db_transactions: db_transactions,
   DATE_FORMAT: DATE_FORMAT,
   allocation_categories: allocation_categories,
   allocation_types: allocation_types,
@@ -231,7 +262,7 @@ module.exports = {
     findAllocationTypeById: findAllocationTypeById,
     uuidv4: uuidv4
   },
-  db: {
+  dbfn: {
     find: dbFind,
     findOne: dbFindOne,
     insert: dbInsert,

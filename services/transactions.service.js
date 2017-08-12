@@ -1,16 +1,7 @@
-const neDB = require('nedb');
-const path = require('path');
 const moment = require('moment');
 const global = require('./global');
 const accountsService = require('./accounts.service');
 const mapper = require('./transactions.mapper');
-
-
-// DB
-const db = new neDB({
-  filename: path.join('data', 'transactions.db'),
-  autoload: true
-});
 
 
 const transfer = (sourceCashTag, destinationCashTag, amount) => {
@@ -40,7 +31,7 @@ const transfer = (sourceCashTag, destinationCashTag, amount) => {
           d_transaction.destination_cash_tag = destinationCashTag;
           d_transaction.amount = amount;
 
-          return global.db.insert(db, d_transaction);
+          return global.dbfn.insert(global.db_transactions, d_transaction);
         })
         .then(newTransaction => {
           let m_transaction = mapper.transaction_dto_from_db(newTransaction, sourceCashTag);
@@ -72,7 +63,7 @@ const get = (filters) => {
         from: moment(filters.from, 'DD/MM/YYYY').format(),
         to: moment(filters.to, 'DD/MM/YYYY').format(),
       };
-      global.db.find(db, {
+      global.dbfn.find(global.db_transactions, {
           $or: [{
             source_cash_tag: query.cash_tag
           }, {

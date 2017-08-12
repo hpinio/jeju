@@ -1,26 +1,12 @@
-const neDB = require('nedb');
-const path = require('path');
 const moment = require('moment');
 const global = require('./global');
 const mapper = require('./accounts.mapper');
 
 
-// DB
-const db = new neDB({
-  filename: path.join('data', 'accounts.db'),
-  autoload: true
-});
-
-const db2 = new neDB({
-  filename: path.join('data', 'allocations_history.db'),
-  autoload: true
-});
-
-
 // get all accounts
 const getAll = () => {
   return new Promise((resolve, reject) => {
-    global.db.find(db, {})
+    global.dbfn.find(global.db_accounts, {})
       .then(data => {
         let mapped = [];
         data.forEach(d => {
@@ -50,7 +36,7 @@ const create = (card_no, cash_tag) => {
         error: 'INVALID'
       });
     } else {
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           card_no: card_no
         })
         .then(account => {
@@ -65,7 +51,7 @@ const create = (card_no, cash_tag) => {
             d_account.card_no = card_no;
             d_account.cash_tag = cash_tag;
 
-            return global.db.insert(db, d_account);
+            return global.dbfn.insert(global.db_accounts, d_account);
           }
         })
         .then(newAccount => {
@@ -91,7 +77,7 @@ const update = (accountJson) => {
         error: 'INVALID'
       });
     } else {
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           _id: accountJson._id
         })
         .then(account => {
@@ -100,7 +86,7 @@ const update = (accountJson) => {
             // for now, lets just update the balance
             account.balance = u_account.balance;
 
-            return global.db.update(db, {
+            return global.dbfn.update(global.db_accounts, {
               _id: account._id
             }, account);
 
@@ -127,7 +113,7 @@ const update = (accountJson) => {
 // GET BY CARDNO
 const getByCardNo = (cardNo) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_accounts, {
         card_no: cardNo
       })
       .then(account => {
@@ -151,7 +137,7 @@ const getByCardNo = (cardNo) => {
 // GET BY CASH TAG
 const getByCashTag = (cashTag) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_accounts, {
         cash_tag: cashTag
       })
       .then(account => {
@@ -175,7 +161,7 @@ const getByCashTag = (cashTag) => {
 // GET BY ID
 const getById = (id) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_accounts, {
         _id: id
       })
       .then(account => {
@@ -206,7 +192,7 @@ const addAllocation = (id, allocationJson) => {
     allocationJson.target_balance = parseInt(allocationJson.target_balance, 10);
     valid = valid && allocationJson.title && allocationJson.title.length;
     valid = valid && allocationJson.category;
-    valid = valid && allocationJson.initial_balance;
+    //valid = valid && allocationJson.initial_balance;
     valid = valid && allocationJson.target_balance;
     valid = valid && moment(allocationJson.due_date, global.DATE_FORMAT).isValid();
     if (!valid) {
@@ -216,7 +202,7 @@ const addAllocation = (id, allocationJson) => {
         error: 'INVALID'
       });
     } else {
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           _id: id
         })
         .then(account => {
@@ -243,7 +229,7 @@ const addAllocation = (id, allocationJson) => {
             u_account.allocations.push(d_allocation);
 
             // update account with added allocation
-            return global.db.update(db, {
+            return global.dbfn.update(global.db_accounts, {
               _id: account._id
             }, u_account);
           }
@@ -277,7 +263,7 @@ const updateAllocation = (id, allocationJson) => {
         error: 'INVALID'
       });
     } else {
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           _id: id
         })
         .then(account => {
@@ -302,12 +288,13 @@ const updateAllocation = (id, allocationJson) => {
                 if (allocation._id === existing._id) {
                   allocation.title = allocationJson.title;
                   allocation.target_balance = allocationJson.target_balance;
+                  allocation.category = allocationJson.category;
                   allocation.due_date = moment(allocationJson.due_date, global.DATE_FORMAT).format();
                 }
               });
 
               // update account with updated allocation
-              return global.db.update(db, {
+              return global.dbfn.update(global.db_accounts, {
                 _id: account._id
               }, account);
             }
@@ -337,7 +324,7 @@ const deleteAllocation = (id, allocationJson) => {
         error: 'INVALID'
       });
     } else {
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           _id: id
         })
         .then(account => {
@@ -346,7 +333,7 @@ const deleteAllocation = (id, allocationJson) => {
             if (idx > -1) {
               account.allocations.splice(idx, 1);
               // update DB
-              return global.db.update(db, {
+              return global.dbfn.update(global.db_accounts, {
                 _id: id
               }, account);
             } else {
@@ -393,7 +380,7 @@ const allocate = (id, allocationJson) => {
       let u_account = null;
       let f_allocation = null;
 
-      global.db.findOne(db, {
+      global.dbfn.findOne(global.db_accounts, {
           _id: id
         })
         .then(account => {
@@ -420,7 +407,7 @@ const allocate = (id, allocationJson) => {
 
               if (found) {
                 // update DB
-                return global.db.update(db, {
+                return global.dbfn.update(global.db_accounts, {
                   _id: id
                 }, account);
               } else {
@@ -453,7 +440,7 @@ const allocate = (id, allocationJson) => {
           history.allocation_category = f_allocation.category;
           history.amount = allocationJson.amount;
 
-          return global.db.insert(db2, history);
+          return global.dbfn.insert(global.db_allocations_history, history);
         })
         .then(history => {
           let m_account = mapper.account_dto_from_db(u_account);

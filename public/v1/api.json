@@ -42,21 +42,24 @@
             "in": "query",
             "description": "Cash Tag to get transactions history",
             "required": true,
-            "type": "string"
+            "type": "string",
+            "default": ""
           },
           {
             "name": "from",
             "in": "query",
-            "description": "Starting date to get transactions history",
+            "description": "Starting date to get transactions history (DD/MM/YYYY)",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "01/01/2017"
           },
           {
             "name": "to",
             "in": "query",
-            "description": "End date to get transactions history",
+            "description": "End date to get transactions history (DD/MM/YYYY)",
             "required": false,
-            "type": "string"
+            "type": "string",
+            "default": "31/12/2017"
           }
         ],
         "responses": {

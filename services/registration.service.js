@@ -1,17 +1,9 @@
-const neDB = require('nedb');
-const path = require('path');
 const moment = require('moment');
 const crypto = require('crypto');
 const accountsMapper = require('./accounts.mapper');
 const accountsService = require('./accounts.service');
 const global = require('./global');
 
-
-// DB
-const db = new neDB({
-  filename: path.join('data', 'registrations.db'),
-  autoload: true
-});
 
 
 const schema = (json) => {
@@ -65,8 +57,7 @@ const create = (cardNo) => {
     let registration = schema(null);
     registration.card_no = cardNo;
 
-    global.db
-      .findOne(db, {
+    global.dbfn.findOne(global.db_registrations, {
         card_no: cardNo
       })
       .then(registration => {
@@ -90,7 +81,7 @@ const create = (cardNo) => {
         registration.current_otp = otp;
 
         // insert
-        return global.db.insert(db, registration);
+        return global.dbfn.insert(global.db_registrations, registration);
       })
       .then(newRegistration => {
         resolve({
@@ -107,7 +98,7 @@ const create = (cardNo) => {
 
 const confirmOTP = (params) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_registrations, {
         _id: params._id,
         registration_token: params.registration_token
       })
@@ -119,7 +110,7 @@ const confirmOTP = (params) => {
             u_registration.otp_confirmed = true;
 
             // update
-            return global.db.update(db, registration, u_registration);
+            return global.dbfn.update(global.db_registrations, registration, u_registration);
           } else {
             reject({
               code: 500,
@@ -151,7 +142,7 @@ const confirmOTP = (params) => {
 
 const setPIN = (params) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_registrations, {
         _id: params._id,
         registration_token: params.registration_token
       })
@@ -162,7 +153,7 @@ const setPIN = (params) => {
           u_registration.pin = params.pin
 
           // update
-          return global.db.update(db, registration, u_registration);
+          return global.dbfn.update(global.db_registrations, registration, u_registration);
         } else {
           reject({
             code: 404,
@@ -187,9 +178,22 @@ const setPIN = (params) => {
 
 const setCashTag = (params) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
-        _id: params._id,
-        registration_token: params.registration_token
+    global.dbfn.findOne(global.db_accounts, {
+        cash_tag: params.cash_tag
+      })
+      .then(account => {
+        if (account) {
+          reject({
+            code: 500,
+            message: 'Cash Tag has been used',
+            error: 'FOUND'
+          });
+        } else {
+          return global.dbfn.findOne(global.db_registrations, {
+            _id: params._id,
+            registration_token: params.registration_token
+          });
+        }
       })
       .then(registration => {
         if (registration) {
@@ -198,7 +202,7 @@ const setCashTag = (params) => {
           u_registration.cash_tag = params.cash_tag
 
           // update
-          return global.db.update(db, registration, u_registration);
+          return global.dbfn.update(global.db_registrations, registration, u_registration);
         } else {
           reject({
             code: 404,
@@ -223,7 +227,7 @@ const setCashTag = (params) => {
 
 const approve = (params) => {
   return new Promise((resolve, reject) => {
-    global.db.findOne(db, {
+    global.dbfn.findOne(global.db_registrations, {
         _id: params._id,
         registration_token: params.registration_token
       })
@@ -253,7 +257,7 @@ const approve = (params) => {
             u_registration.approved = true;
 
             // update
-            return global.db.update(db, registration, u_registration);
+            return global.dbfn.update(global.db_registrations, registration, u_registration);
           }
         }
       })
