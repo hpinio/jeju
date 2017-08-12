@@ -21,12 +21,57 @@
     {
       "name": "cards",
       "description": "All about cards"
+    },
+    {
+      "name": "auth",
+      "description": "Auth operations"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "auth"
+        ],
+        "summary": "Login",
+        "description": "",
+        "operationId": "login",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Login parameters",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Login"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/cards": {
       "post": {
         "tags": [
@@ -661,6 +706,18 @@
     }
   },
   "definitions": {
+    "Login": {
+      "type": "object",
+      "properties": {
+        "cash_tag": {
+          "type": "string"
+        },
+        "pin": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "Card": {
       "type": "object",
       "properties": {
