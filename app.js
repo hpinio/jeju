@@ -10,6 +10,7 @@ var users = require('./routes/api/users');
 var registration = require('./routes/api/registration');
 var accounts = require('./routes/api/accounts');
 var transactions = require('./routes/api/transactions');
+var cards = require('./routes/api/cards');
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use('/api/users', users);
 app.use('/api/registration', registration);
 app.use('/api/accounts', accounts);
 app.use('/api/transactions', transactions);
+app.use('/api/cards', cards);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

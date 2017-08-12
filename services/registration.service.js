@@ -227,6 +227,8 @@ const setCashTag = (params) => {
 
 const approve = (params) => {
   return new Promise((resolve, reject) => {
+    let createdAccount = null;
+
     global.dbfn.findOne(global.db_registrations, {
         _id: params._id,
         registration_token: params.registration_token
@@ -266,7 +268,23 @@ const approve = (params) => {
         return accountsService.create(updatedRegistration.card_no, updatedRegistration.cash_tag);
       })
       .then(newAccount => {
-        return accountsService.getByCardNo(newAccount.card_no);
+        createdAccount = newAccount;
+        return global.dbfn.findOne(global.db_cards, {
+          card_no: newAccount.card_no
+        });
+      })
+      .then(card => {
+        let balance = card ? card.initial_balance : 0;
+        return global.dbfn.update(global.db_accounts, {
+          card_no: createdAccount.card_no
+        }, {
+          $set: {
+            balance: balance
+          }
+        });
+      })
+      .then(updatedAccount => {
+        return accountsService.getByCardNo(createdAccount.card_no);
       })
       .then(account => {
         if (account) {
@@ -291,13 +309,43 @@ const approve = (params) => {
 };
 
 
+const setCardInitialBalance = (cardNo, initialBalance) => {
+  return new Promise((resolve, reject) => {
+    global.dbfn.findOne(global.db_cards, {
+        card_no: cardNo
+      })
+      .then(card => {
+        if (card) {
+          card.initial_balance = initialBalance;
+          return global.dbfn.update(global.db_cards, {
+            card_no: cardNo
+          }, d_card);
+        } else {
+          let d_card = {
+            card_no: cardNo,
+            initial_balance: initialBalance
+          };
+          return global.dbfn.insert(global.db_cards, d_card);
+        }
+      })
+      .then(r_card => {
+        resolve(r_card);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
+
 // EXPOSE PUBLIC
 const Service = {
   create: create,
   confirmOTP: confirmOTP,
   setPIN: setPIN,
   setCashTag: setCashTag,
-  approve: approve
+  approve: approve,
+  setCardInitialBalance: setCardInitialBalance
 };
 
 module.exports = Service;

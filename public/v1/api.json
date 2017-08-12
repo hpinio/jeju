@@ -17,12 +17,52 @@
     {
       "name": "transactions",
       "description": "Operations related to transactions"
+    },
+    {
+      "name": "cards",
+      "description": "All about cards"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
+    "/cards": {
+      "post": {
+        "tags": [
+          "cards"
+        ],
+        "summary": "Add Card initial balance",
+        "description": "",
+        "operationId": "addCard",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "body",
+          "in": "body",
+          "description": "Parameters for adding card",
+          "required": true,
+          "schema": {
+            "$ref": "#/definitions/Card"
+          }
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Card"
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/transactions": {
       "get": {
         "tags": [
@@ -584,6 +624,18 @@
     }
   },
   "definitions": {
+    "Card": {
+      "type": "object",
+      "properties": {
+        "card_no": {
+          "type": "string"
+        },
+        "initial_balance": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "TransactionHistory": {
       "type": "object",
       "properties": {

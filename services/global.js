@@ -18,6 +18,10 @@ const db_transactions = new neDB({
   filename: path.join('data', 'transactions.db'),
   autoload: true
 });
+const db_cards = new neDB({
+  filename: path.join('data', 'cards.db'),
+  autoload: true
+});
 
 
 
@@ -250,6 +254,7 @@ module.exports = {
   db_registrations: db_registrations,
   db_allocations_history: db_allocations_history,
   db_transactions: db_transactions,
+  db_cards: db_cards,
   DATE_FORMAT: DATE_FORMAT,
   allocation_categories: allocation_categories,
   allocation_types: allocation_types,
