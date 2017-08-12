@@ -22,7 +22,7 @@ const transaction_dto_from_db = (dbDoc, currentCashTag) => {
     type: '',
   };
   transaction.source_cash_tag = dbDoc.source_cash_tag;
-  transaction.destination_cash_tag = dbDoc.source_cash_tag;
+  transaction.destination_cash_tag = dbDoc.destination_cash_tag;
   transaction.amount = dbDoc.amount;
   transaction.transaction_date = moment(dbDoc.transaction_date).format(global.TRANSACTION_DATE_FORMAT);
   transaction.raw_transaction_date = moment(dbDoc.transaction_date).format();
