@@ -22,6 +22,10 @@ const db_cards = new neDB({
   filename: path.join('data', 'cards.db'),
   autoload: true
 });
+const db_offers = new neDB({
+  filename: path.join('data', 'offers.db'),
+  autoload: true
+});
 
 
 
@@ -230,19 +234,22 @@ module.exports = {
   db_allocations_history: db_allocations_history,
   db_transactions: db_transactions,
   db_cards: db_cards,
+  db_offers: db_offers,
+
   DATE_FORMAT: DATE_FORMAT,
   TRANSACTION_DATE_FORMAT: TRANSACTION_DATE_FORMAT,
+
   allocation_categories: allocation_categories,
   allocation_types: allocation_types,
+
   fn: {
-    // findAccountAllocationCategoryById: findAccountAllocationCategoryById,
     findAccountAllocationById: findAccountAllocationById,
-    // findIndexOfAccountAllocationCategoryById: findIndexOfAccountAllocationCategoryById,
     findIndexOfAccountAllocationById: findIndexOfAccountAllocationById,
     findAllocationCategoryById: findAllocationCategoryById,
     findAllocationTypeById: findAllocationTypeById,
     uuidv4: uuidv4
   },
+
   dbfn: {
     find: dbFind,
     findOne: dbFindOne,

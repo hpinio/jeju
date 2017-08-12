@@ -77,6 +77,7 @@ const account_dto_from_db = (dbDoc) => {
     allocations: [],
     balance: 0,
     parent_cash_tag: '',
+    point_balance: 0
   };
   account.card_no = dbDoc.card_no;
   account.cash_tag = dbDoc.cash_tag;
@@ -91,6 +92,7 @@ const account_dto_from_db = (dbDoc) => {
   }
   account._id = dbDoc._id;
   account.parent_cash_tag = dbDoc.parent_cash_tag;
+  account.point_balance = dbDoc.point_balance;
   return account;
 };
 
@@ -101,6 +103,7 @@ const account_db_from_dto = (json) => {
     allocations: [],
     balance: 0,
     parent_cash_tag: '',
+    point_balance: 0
   };
   account.card_no = json.card_no;
   account.cash_tag = json.cash_tag;
@@ -116,6 +119,9 @@ const account_db_from_dto = (json) => {
     account._id = json._id;
   }
   account.parent_cash_tag = json.parent_cash_tag;
+  if (json.hasOwnProperty('point_balance')) {
+    account.point_balance = json.point_balance;
+  }
   return account;
 };
 
@@ -125,7 +131,8 @@ const account_db = () => {
     cash_tag: '',
     allocations: [],
     balance: 0,
-    parent_cash_tag: ''
+    parent_cash_tag: '',
+    point_balance: 0
   };
   return account;
 };

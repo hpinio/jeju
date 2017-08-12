@@ -85,8 +85,9 @@ const create = (cardNo) => {
         registration.registration_token = token;
 
         // create OTP 
-        const otp = Math.floor(1000 + Math.random() * 9000);
-        registration.current_otp = otp;
+        // const otp = Math.floor(1000 + Math.random() * 9000);
+        // registration.current_otp = otp;
+        registration.current_otp = 1308;
 
         // insert
         return global.dbfn.insert(global.db_registrations, registration);
