@@ -41,15 +41,33 @@ const allocation_categories = [{
     id: 6,
     name: 'F&B',
     type: 2
+  },
+  {
+    id: 7,
+    name: 'Gadgets',
+    type: 2
   }
 ];
 
 
-const findAccountAllocationCategoryById = (account, category) => {
+// const findAccountAllocationCategoryById = (account, category) => {
+//   let found = null;
+//   for (let index = 0; index < account.allocations.length; index++) {
+//     let allocation = account.allocations[index];
+//     if (allocation.category === category) {
+//       found = allocation;
+//       break;
+//     }
+//   }
+//   return found;
+// };
+
+
+const findAccountAllocationById = (account, _id) => {
   let found = null;
   for (let index = 0; index < account.allocations.length; index++) {
     let allocation = account.allocations[index];
-    if (allocation.category === category) {
+    if (allocation._id === _id) {
       found = allocation;
       break;
     }
@@ -57,17 +75,30 @@ const findAccountAllocationCategoryById = (account, category) => {
   return found;
 };
 
-const findIndexOfAccountAllocationCategoryById = (account, category) => {
+// const findIndexOfAccountAllocationCategoryById = (account, category) => {
+//   let found = -1;
+//   for (let index = 0; index < account.allocations.length; index++) {
+//     let allocation = account.allocations[index];
+//     if (allocation.category === category) {
+//       found = index;
+//       break;
+//     }
+//   }
+//   return found;
+// };
+
+const findIndexOfAccountAllocationById = (account, _id) => {
   let found = -1;
   for (let index = 0; index < account.allocations.length; index++) {
     let allocation = account.allocations[index];
-    if (allocation.category === category) {
+    if (allocation._id === _id) {
       found = index;
       break;
     }
   }
   return found;
 };
+
 
 const findAllocationCategoryById = (category) => {
   let found = null;
@@ -179,15 +210,26 @@ const dbDelete = (db, query) => {
 };
 
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0,
+      v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 module.exports = {
   DATE_FORMAT: DATE_FORMAT,
   allocation_categories: allocation_categories,
   allocation_types: allocation_types,
   fn: {
-    findAccountAllocationCategoryById: findAccountAllocationCategoryById,
-    findIndexOfAccountAllocationCategoryById: findIndexOfAccountAllocationCategoryById,
+    // findAccountAllocationCategoryById: findAccountAllocationCategoryById,
+    findAccountAllocationById: findAccountAllocationById,
+    // findIndexOfAccountAllocationCategoryById: findIndexOfAccountAllocationCategoryById,
+    findIndexOfAccountAllocationById: findIndexOfAccountAllocationById,
     findAllocationCategoryById: findAllocationCategoryById,
     findAllocationTypeById: findAllocationTypeById,
+    uuidv4: uuidv4
   },
   db: {
     find: dbFind,

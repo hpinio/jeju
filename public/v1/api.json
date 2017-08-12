@@ -40,7 +40,7 @@
         "parameters": [{
           "name": "body",
           "in": "body",
-          "description": "Parameters of transaction to allocation category",
+          "description": "Parameters of transaction to allocation",
           "required": true,
           "schema": {
             "$ref": "#/definitions/Transaction"
@@ -59,13 +59,12 @@
         }
       }
     },
-    "/accounts/{id}/allocations/transactions": {
+    "/accounts/{id}/allocations/{allocation_id}/transactions": {
       "post": {
         "tags": [
-          "transactions",
-          "accounts"
+          "transactions"
         ],
-        "summary": "Transfer amount to allocation category",
+        "summary": "Transfer amount to allocation",
         "description": "",
         "operationId": "allocate",
         "consumes": [
@@ -82,9 +81,16 @@
             "type": "string"
           },
           {
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
-            "description": "Parameters of transaction to allocation category",
+            "description": "Parameters of transaction to allocation",
             "required": true,
             "schema": {
               "$ref": "#/definitions/AllocationTransaction"
@@ -235,7 +241,7 @@
             "description": "Parameters for adding and updating allocation",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AddEditAllocation"
+              "$ref": "#/definitions/AddAllocation"
             }
           }
         ],
@@ -250,7 +256,9 @@
             "description": "Server Error"
           }
         }
-      },
+      }
+    },
+    "/accounts/{id}/allocations/{allocation_id}": {
       "put": {
         "tags": [
           "accounts"
@@ -272,12 +280,19 @@
             "type": "string"
           },
           {
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "description": "Parameters for adding and updating allocation",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/AddEditAllocation"
+              "$ref": "#/definitions/EditAllocation"
             }
           }
         ],
@@ -314,13 +329,11 @@
             "type": "string"
           },
           {
-            "name": "body",
-            "in": "body",
-            "description": "Parameters for deleting allocation",
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/DeleteAllocation"
-            }
+            "type": "string"
           }
         ],
         "responses": {
@@ -589,6 +602,12 @@
     "Allocation": {
       "type": "object",
       "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
         "type": {
           "type": "integer",
           "format": "int32"
@@ -613,9 +632,35 @@
         }
       }
     },
-    "AddEditAllocation": {
+    "AddAllocation": {
       "type": "object",
       "properties": {
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "initial_balance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "target_balance": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "due_date": {
+          "type": "string"
+        }
+      }
+    },
+    "EditAllocation": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
         "category": {
           "type": "integer",
           "format": "int32"
@@ -629,22 +674,9 @@
         }
       }
     },
-    "DeleteAllocation": {
-      "type": "object",
-      "properties": {
-        "category": {
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
     "AllocationTransaction": {
       "type": "object",
       "properties": {
-        "category": {
-          "type": "integer",
-          "format": "int32"
-        },
         "amount": {
           "type": "integer",
           "format": "int32"

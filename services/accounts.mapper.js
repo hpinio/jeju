@@ -4,6 +4,8 @@ const global = require('./global');
 // MAPPER ALLOCATION
 const allocation_dto_from_db = (dbDoc) => {
   let allocation = {
+    _id: '',
+    title: '',
     type: null,
     category: null,
     target_balance: 0,
@@ -18,16 +20,20 @@ const allocation_dto_from_db = (dbDoc) => {
   let category = global.fn.findAllocationCategoryById(dbDoc.category);
   allocation.category = category;
 
+  allocation.title = dbDoc.title;
   allocation.target_balance = dbDoc.target_balance;
   allocation.balance = dbDoc.balance;
   allocation.start_date = moment(dbDoc.start_date).format(global.DATE_FORMAT);
   allocation.due_date = moment(dbDoc.due_date).format(global.DATE_FORMAT);
+  allocation._id = dbDoc._id;
 
   return allocation;
 };
 
 const allocation_db_from_dto = (json) => {
   let allocation = {
+    _id: '',
+    title: '',
     type: 0,
     category: 0,
     target_balance: 0,
@@ -35,17 +41,23 @@ const allocation_db_from_dto = (json) => {
     start_date: moment().format(),
     due_date: moment().format()
   };
+  allocation.title = json.title;
   allocation.type = json.type.id;
   allocation.category = json.category.id;
   allocation.target_balance = json.target_balance;
   allocation.balance = json.balance;
   allocation.start_date = moment(json.start_date, global.DATE_FORMAT).format();
   allocation.due_date = moment(json.due_date, global.DATE_FORMAT).format();
+  if (json.hasOwnProperty('_id')) {
+    allocation._id = json._id;
+  }
   return allocation;
 };
 
 const allocation_db = () => {
   let allocation = {
+    _id: '',
+    title: '',
     type: 0,
     category: 0,
     target_balance: 0,
@@ -116,7 +128,9 @@ const account_db = () => {
 
 const allocation_history_db = () => {
   let history = {
-    category: 0,
+    account_id: '',
+    allocation_id: '',
+    allocation_category: 0,
     amount: 0,
     transaction_date: moment().format(),
   };

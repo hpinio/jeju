@@ -71,9 +71,11 @@ router.post('/:id/allocations', (req, res, next) => {
 
 
 // update allocation
-router.put('/:id/allocations', (req, res, next) => {
+router.put('/:id/allocations/:allocation_id', (req, res, next) => {
   let id = req.params.id;
+  let allocation_id = req.params.allocation_id;
   let allocation = req.body;
+  allocation._id = allocation_id;
   accountsService.updateAllocation(id, allocation)
     .then(account => {
       res.json({
@@ -88,9 +90,11 @@ router.put('/:id/allocations', (req, res, next) => {
 
 
 // delete allocation
-router.delete('/:id/allocations', (req, res, next) => {
+router.delete('/:id/allocations/:allocation_id', (req, res, next) => {
   let id = req.params.id;
+  let allocation_id = req.params.allocation_id;
   let allocation = req.body;
+  allocation._id = allocation_id;
   accountsService.deleteAllocation(id, allocation)
     .then(account => {
       res.json({
@@ -106,10 +110,11 @@ router.delete('/:id/allocations', (req, res, next) => {
 
 
 // allocate 
-router.post('/:id/allocations/transactions', (req, res, next) => {
+router.post('/:id/allocations/:allocation_id/transactions', (req, res, next) => {
   let id = req.params.id;
+  let allocation_id = req.params.allocation_id;
   let allocation = req.body;
-  // allocation: { category: 0, amount: 0 }
+  allocation._id = allocation_id;
   accountsService.allocate(id, allocation)
     .then(account => {
       res.json({
