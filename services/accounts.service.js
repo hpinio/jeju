@@ -453,6 +453,45 @@ const allocate = (id, allocationJson) => {
   });
 };
 
+const getAllocationsHistory = (id, filters) => {
+  return new Promise((resolve, reject) => {
+    global.dbfn.findOne(global.db_accounts, {
+        _id: id
+      })
+      .then(account => {
+        if (!account) {
+          reject({
+            code: 404,
+            message: 'Not an account',
+            error: 'NOT FOUND'
+          });
+        } else {
+          return global.dbfn.find(global.db_allocations_history, {
+            account_id: id
+          });
+        }
+      })
+      .then(data => {
+        let mapped = [];
+        data.forEach(d => {
+          let category = global.fn.findAllocationCategoryById(d.allocation_category);
+          let m_d = {
+            allocation_id: d.allocation_id,
+            category: category ? category.name : '',
+            amount: d.amount,
+            transaction_date: moment(d.transaction_date).format(global.TRANSACTION_DATE_FORMAT),
+            raw_transaction_date: moment(d.transaction_date).format()
+          };
+          mapped.push(m_d);
+        });
+        resolve(mapped);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
 
 // EXPOSE PUBLIC
 const Service = {
@@ -463,6 +502,7 @@ const Service = {
   updateAllocation: updateAllocation,
   deleteAllocation: deleteAllocation,
   allocate: allocate,
+  getAllocationsHistory: getAllocationsHistory,
   create: create,
   update: update,
   getAll: getAll,

@@ -152,6 +152,43 @@
         }
       }
     },
+    "/accounts/{id}/allocations/transactions": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Get history of transfers to allocations in an account",
+        "description": "",
+        "operationId": "getAllocationsHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Account id to get the transactions history",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AllocationHistory"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/accounts/{id}/allocations/{allocation_id}/transactions": {
       "post": {
         "tags": [
@@ -785,12 +822,46 @@
         }
       }
     },
+    "AllocationHistory": {
+      "type": "object",
+      "properties": {
+        "allocation_id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "category": {
+          "type": "string"
+        },
+        "amount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "transaction_date": {
+          "type": "string"
+        },
+        "raw_transaction_date": {
+          "type": "string"
+        }
+      }
+    },
     "AllocationTransaction": {
       "type": "object",
       "properties": {
         "amount": {
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "AllocationCategory": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "type": "string"
         }
       }
     },

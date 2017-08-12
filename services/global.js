@@ -78,18 +78,6 @@ const allocation_categories = [{
 ];
 
 
-// const findAccountAllocationCategoryById = (account, category) => {
-//   let found = null;
-//   for (let index = 0; index < account.allocations.length; index++) {
-//     let allocation = account.allocations[index];
-//     if (allocation.category === category) {
-//       found = allocation;
-//       break;
-//     }
-//   }
-//   return found;
-// };
-
 
 const findAccountAllocationById = (account, _id) => {
   let found = null;
@@ -103,18 +91,6 @@ const findAccountAllocationById = (account, _id) => {
   return found;
 };
 
-// const findIndexOfAccountAllocationCategoryById = (account, category) => {
-//   let found = -1;
-//   for (let index = 0; index < account.allocations.length; index++) {
-//     let allocation = account.allocations[index];
-//     if (allocation.category === category) {
-//       found = index;
-//       break;
-//     }
-//   }
-//   return found;
-// };
-
 const findIndexOfAccountAllocationById = (account, _id) => {
   let found = -1;
   for (let index = 0; index < account.allocations.length; index++) {
@@ -127,7 +103,6 @@ const findIndexOfAccountAllocationById = (account, _id) => {
   return found;
 };
 
-
 const findAllocationCategoryById = (category) => {
   let found = null;
   for (let index = 0; index < allocation_categories.length; index++) {
@@ -139,7 +114,6 @@ const findAllocationCategoryById = (category) => {
   }
   return found;
 };
-
 
 const findAllocationTypeById = (type) => {
   let found = null;
@@ -155,6 +129,7 @@ const findAllocationTypeById = (type) => {
 
 
 const DATE_FORMAT = 'DD/MM/YYYY';
+const TRANSACTION_DATE_FORMAT = 'DD/MM/YYYY HH:mm:ss';
 
 
 const dbFind = (db, query) => {
@@ -256,6 +231,7 @@ module.exports = {
   db_transactions: db_transactions,
   db_cards: db_cards,
   DATE_FORMAT: DATE_FORMAT,
+  TRANSACTION_DATE_FORMAT: TRANSACTION_DATE_FORMAT,
   allocation_categories: allocation_categories,
   allocation_types: allocation_types,
   fn: {

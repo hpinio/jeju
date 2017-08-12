@@ -141,6 +141,20 @@ router.post('/:id/allocations/:allocation_id/transactions', (req, res, next) => 
     });
 });
 
+router.get('/:id/allocations/transactions', (req, res, next) => {
+  let id = req.params.id;
+  accountsService.getAllocationsHistory(id, {})
+    .then(data => {
+      res.json({
+        d: data
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(error.code).send(error);
+    });
+});
+
 
 
 module.exports = router;
