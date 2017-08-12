@@ -24,6 +24,56 @@
   ],
   "paths": {
     "/transactions": {
+      "get": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Get history of transactions",
+        "description": "",
+        "operationId": "historyTransactions",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "cash_tag",
+            "in": "query",
+            "description": "Cash Tag to get transactions history",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Starting date to get transactions history",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date to get transactions history",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TransactionHistory"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
       "post": {
         "tags": [
           "transactions"
@@ -546,6 +596,12 @@
         },
         "transaction_date": {
           "format": "string"
+        },
+        "raw_transaction_date": {
+          "format": "string"
+        },
+        "type": {
+          "type": "string"
         }
       }
     },
