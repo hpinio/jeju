@@ -17,6 +17,25 @@ const db2 = new neDB({
 });
 
 
+// get all accounts
+const getAll = () => {
+  return new Promise((resolve, reject) => {
+    global.db.find(db, {})
+      .then(data => {
+        let mapped = [];
+        data.forEach(d => {
+          let m_d = mapper.account_dto_from_db(d);
+          mapped.push(m_d);
+        });
+        resolve(mapped);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
+
 // CREATE
 const create = (card_no, cash_tag) => {
   return new Promise((resolve, reject) => {
@@ -459,6 +478,7 @@ const Service = {
   allocate: allocate,
   create: create,
   update: update,
+  getAll: getAll,
 };
 
 module.exports = Service;

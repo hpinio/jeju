@@ -3,6 +3,20 @@ const router = express.Router();
 const accountsService = require('../../services/accounts.service');
 
 
+router.get('/', (req, res, next) => {
+  accountsService.getAll()
+    .then(data => {
+      res.json({
+        d: data
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(error.code).send(error);
+    });
+});
+
+
 // create account
 router.post('/', (req, res, next) => {
   let id = req.params.id;
