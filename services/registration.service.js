@@ -54,6 +54,14 @@ const createToken = () => {
 
 const create = (cardNo) => {
   return new Promise((resolve, reject) => {
+    if (!cardNo || isNaN(cardNo)) {
+      reject({
+        code: 400,
+        message: 'Invalid input',
+        error: 'INVALID'
+      });
+    }
+
     let registration = schema(null);
     registration.card_no = cardNo;
 
