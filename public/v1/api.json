@@ -234,6 +234,43 @@
         }
       }
     },
+    "/accounts/bycashtag/{cash_tag}/allocations/transactions": {
+      "get": {
+        "tags": [
+          "accounts"
+        ],
+        "summary": "Get history of transfers to allocations in an account",
+        "description": "",
+        "operationId": "getAllocationsHistoryByCashTag",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "cash_tag",
+          "in": "path",
+          "description": "Account cash tag to get the transactions history",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AllocationHistory"
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/accounts/{id}/allocations/{allocation_id}/transactions": {
       "post": {
         "tags": [

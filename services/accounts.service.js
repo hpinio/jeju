@@ -504,6 +504,57 @@ const getAllocationsHistory = (id, filters) => {
   });
 };
 
+const getAllocationsHistoryByCashTag = (cashTag, filters) => {
+  return new Promise((resolve, reject) => {
+    let d_account = null;
+
+    global.dbfn.findOne(global.db_accounts, {
+        cash_tag: cashTag
+      })
+      .then(account => {
+        if (!account) {
+          reject({
+            code: 404,
+            message: 'Not an account',
+            error: 'NOT FOUND'
+          });
+        } else {
+          d_account = account;
+          return global.dbfn.find(global.db_allocations_history, {
+            account_id: d_account._id
+          });
+        }
+      })
+      .then(data => {
+        let mapped = [];
+        data.forEach(d => {
+          let category = global.fn.findAllocationCategoryById(d.allocation_category);
+
+          let allocation = null;
+          d_account.allocations.forEach(a => {
+            if (a._id === d.allocation_id) {
+              allocation = a;
+            }
+          });
+
+          let m_d = {
+            allocation_title: allocation ? allocation.title : '',
+            allocation_id: d.allocation_id,
+            category: category ? category.name : '',
+            amount: d.amount,
+            transaction_date: moment(d.transaction_date).format(global.TRANSACTION_DATE_FORMAT),
+            raw_transaction_date: moment(d.transaction_date).format()
+          };
+          mapped.push(m_d);
+        });
+        resolve(mapped);
+      })
+      .catch(err => {
+        reject(err);
+      });
+  });
+};
+
 
 // EXPOSE PUBLIC
 const Service = {
@@ -515,6 +566,7 @@ const Service = {
   deleteAllocation: deleteAllocation,
   allocate: allocate,
   getAllocationsHistory: getAllocationsHistory,
+  getAllocationsHistoryByCashTag: getAllocationsHistoryByCashTag,
   create: create,
   update: update,
   getAll: getAll,

@@ -155,6 +155,20 @@ router.get('/:id/allocations/transactions', (req, res, next) => {
     });
 });
 
+router.get('/bycashtag/:cash_tag/allocations/transactions', (req, res, next) => {
+  let cashTag = req.params.cash_tag;
+  accountsService.getAllocationsHistoryByCashTag(cashTag, {})
+    .then(data => {
+      res.json({
+        d: data
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(error.code).send(error);
+    });
+});
+
 
 
 module.exports = router;
