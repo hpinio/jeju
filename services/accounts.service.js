@@ -372,6 +372,7 @@ const deleteAllocation = (id, allocationJson) => {
 // WITHDRAW
 const withdraw = (id, allocationJson) => {
   return new Promise((resolve, reject) => {
+    allocationJson.amount = parseInt(allocationJson.amount, 10);
     let valid = true;
     valid = valid && allocationJson;
     valid = valid && allocationJson.amount;
@@ -407,7 +408,7 @@ const withdraw = (id, allocationJson) => {
               });
             } else {
               // check balance 
-              if (d_allocation.balance < allocationJson.balance) {
+              if (d_allocation.balance < allocationJson.amount) {
                 reject({
                   code: 500,
                   message: 'Allocation balance is not enough',
@@ -479,6 +480,7 @@ const withdraw = (id, allocationJson) => {
 // ALLOCATE
 const allocate = (id, allocationJson) => {
   return new Promise((resolve, reject) => {
+    allocationJson.amount = parseInt(allocationJson.amount, 10);
     let valid = true;
     valid = valid && allocationJson;
     valid = valid && allocationJson.amount;

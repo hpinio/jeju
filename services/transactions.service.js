@@ -4,6 +4,14 @@ const accountsService = require('./accounts.service');
 const mapper = require('./transactions.mapper');
 
 
+const s = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(function () {
+      resolve(true);
+    }, 100);
+  });
+};
+
 const transfer = (sourceCashTag, destinationCashTag, amount) => {
   return new Promise((resolve, reject) => {
     let valid = true;
@@ -17,14 +25,27 @@ const transfer = (sourceCashTag, destinationCashTag, amount) => {
         error: 'INVALID'
       });
     } else {
-      accountsService.getByCashTag(destinationCashTag)
-        .then(account => {
-          // add balance to account
-          account.balance = account.balance + amount;
-          // update the account
-          return accountsService.update(account);
+      accountsService.getByCashTag(sourceCashTag)
+        .then(sourceAccount => {
+          // reduce balance from source account
+          sourceAccount.balance = sourceAccount.balance - amount;
+          // update the source account
+          return accountsService.update(sourceAccount);
+        }, err => {
+          return s();
         })
-        .then(account => {
+        .then(sourceAccount => {
+          return accountsService.getByCashTag(destinationCashTag);
+        })
+        .then(destinationAccount => {
+          // add balance to destination Account
+          destinationAccount.balance = destinationAccount.balance + amount;
+          // update the destination Account
+          return accountsService.update(destinationAccount);
+        }, err => {
+          return s();
+        })
+        .then(destinationAccount => {
           // create transaction history
           let d_transaction = mapper.transaction_db();
           d_transaction.source_cash_tag = sourceCashTag;
