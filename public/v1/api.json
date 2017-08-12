@@ -882,6 +882,9 @@
     "AllocationHistory": {
       "type": "object",
       "properties": {
+        "allocation_title": {
+          "type": "string"
+        },
         "allocation_id": {
           "type": "integer",
           "format": "int32"

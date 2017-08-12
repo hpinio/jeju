@@ -455,6 +455,8 @@ const allocate = (id, allocationJson) => {
 
 const getAllocationsHistory = (id, filters) => {
   return new Promise((resolve, reject) => {
+    let d_account = null;
+
     global.dbfn.findOne(global.db_accounts, {
         _id: id
       })
@@ -466,6 +468,7 @@ const getAllocationsHistory = (id, filters) => {
             error: 'NOT FOUND'
           });
         } else {
+          d_account = account;
           return global.dbfn.find(global.db_allocations_history, {
             account_id: id
           });
@@ -475,7 +478,16 @@ const getAllocationsHistory = (id, filters) => {
         let mapped = [];
         data.forEach(d => {
           let category = global.fn.findAllocationCategoryById(d.allocation_category);
+
+          let allocation = null;
+          d_account.allocations.forEach(a => {
+            if (a._id === d.allocation_id) {
+              allocation = a;
+            }
+          });
+
           let m_d = {
+            allocation_title: allocation ? allocation.title : '',
             allocation_id: d.allocation_id,
             category: category ? category.name : '',
             amount: d.amount,
