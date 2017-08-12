@@ -29,12 +29,51 @@
     {
       "name": "auth",
       "description": "Auth operations"
+    },
+    {
+      "name": "points",
+      "description": "All about points"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
+    "/offers": {
+      "get": {
+        "tags": [
+          "points"
+        ],
+        "summary": "Get point offers",
+        "description": "",
+        "operationId": "offers",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Offer"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "tags": [
@@ -889,6 +928,27 @@
     }
   },
   "definitions": {
+    "Offer": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "merchant_name": {
+          "type": "string"
+        },
+        "product_name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "point_price": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
     "Login": {
       "type": "object",
       "properties": {
