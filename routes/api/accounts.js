@@ -141,6 +141,24 @@ router.post('/:id/allocations/:allocation_id/transactions', (req, res, next) => 
     });
 });
 
+router.post('/:id/allocations/:allocation_id/withdrawal', (req, res, next) => {
+  let id = req.params.id;
+  let allocation_id = req.params.allocation_id;
+  let allocation = req.body;
+  allocation._id = allocation_id;
+  accountsService.withdraw(id, allocation)
+    .then(account => {
+      res.json({
+        d: account
+      });
+    })
+    .catch(error => {
+      console.log(error);
+      res.status(error.code).send(error);
+    });
+});
+
+
 router.get('/:id/allocations/transactions', (req, res, next) => {
   let id = req.params.id;
   accountsService.getAllocationsHistory(id, {})

@@ -352,6 +352,62 @@
         }
       }
     },
+    "/accounts/{id}/allocations/{allocation_id}/withdrawal": {
+      "post": {
+        "tags": [
+          "transactions"
+        ],
+        "summary": "Transfer amount from allocation to wallet",
+        "description": "",
+        "operationId": "withdraw",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "id",
+            "in": "path",
+            "description": "Id for getting an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters of transaction to allocation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AllocationTransaction"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
     "/accounts": {
       "post": {
         "tags": [

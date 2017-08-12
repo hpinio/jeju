@@ -363,6 +363,115 @@ const deleteAllocation = (id, allocationJson) => {
 };
 
 
+
+
+// WITHDRAW
+const withdraw = (id, allocationJson) => {
+  return new Promise((resolve, reject) => {
+    let valid = true;
+    valid = valid && allocationJson;
+    valid = valid && allocationJson.amount;
+    valid = valid && allocationJson._id;
+    valid = valid && allocationJson.amount > 0;
+    if (!valid) {
+      reject({
+        code: 400,
+        message: 'Invalid input',
+        error: 'INVALID'
+      });
+    } else {
+      let u_account = null;
+      let f_allocation = null;
+
+      global.dbfn.findOne(global.db_accounts, {
+          _id: id
+        })
+        .then(account => {
+          if (account) {
+            let d_allocation = null;
+            // check allocation to withdrawn
+            account.allocations.forEach(a => {
+              if (a._id === allocationJson._id) {
+                d_allocation = a;
+              }
+            });
+            if (!d_allocation) {
+              reject({
+                code: 404,
+                message: 'Allocation not found',
+                error: 'NOT FOUND'
+              });
+            } else {
+              // check balance 
+              if (d_allocation.balance < allocationJson.balance) {
+                reject({
+                  code: 500,
+                  message: 'Allocation balance is not enough',
+                  error: 'INVALID'
+                });
+              } else {
+                // update account
+                account.balance = account.balance + allocationJson.amount;
+
+                let found = null;
+                account.allocations.forEach(allocation => {
+                  if (allocation._id === allocationJson._id) {
+                    found = allocation;
+                    f_allocation = found;
+                    allocation.balance = allocation.balance - allocationJson.amount;
+                  }
+                });
+
+                if (found) {
+                  // update DB
+                  return global.dbfn.update(global.db_accounts, {
+                    _id: id
+                  }, account);
+                } else {
+                  reject({
+                    code: 404,
+                    message: 'No allocation',
+                    error: 'NOT FOUND'
+                  });
+                }
+              }
+            }
+          } else {
+            reject({
+              code: 404,
+              message: 'Not an account',
+              error: 'NOT FOUND'
+            });
+          }
+        })
+        .then(updatedAccount => {
+          u_account = updatedAccount;
+
+          let history = mapper.allocation_history_db();
+          // account_id: '',
+          // allocation_id: '',
+          // allocation_category: 0,
+          // amount: 0,
+          // transaction_date: moment().format(),
+          history.account_id = updatedAccount._id;
+          history.allocation_id = allocationJson._id;
+          history.allocation_category = f_allocation.category;
+          history.amount = -1 * allocationJson.amount;
+
+          return global.dbfn.insert(global.db_allocations_history, history);
+        })
+        .then(history => {
+          let m_account = mapper.account_dto_from_db(u_account);
+          resolve(m_account);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    }
+  });
+};
+
+
 // ALLOCATE
 const allocate = (id, allocationJson) => {
   return new Promise((resolve, reject) => {
@@ -370,6 +479,7 @@ const allocate = (id, allocationJson) => {
     valid = valid && allocationJson;
     valid = valid && allocationJson.amount;
     valid = valid && allocationJson._id;
+    valid = valid && allocationJson.amount > 0;
     if (!valid) {
       reject({
         code: 400,
@@ -565,6 +675,7 @@ const Service = {
   updateAllocation: updateAllocation,
   deleteAllocation: deleteAllocation,
   allocate: allocate,
+  withdraw: withdraw,
   getAllocationsHistory: getAllocationsHistory,
   getAllocationsHistoryByCashTag: getAllocationsHistoryByCashTag,
   create: create,
