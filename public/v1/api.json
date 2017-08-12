@@ -15,6 +15,10 @@
       "description": "Operations related to Accounts"
     },
     {
+      "name": "allocations",
+      "description": "Operations about allocations"
+    },
+    {
       "name": "transactions",
       "description": "Operations related to transactions"
     },
@@ -212,14 +216,14 @@
         }
       }
     },
-    "/accounts/{id}/allocations/transactions": {
-      "get": {
+    "/accounts/{id}/allocations": {
+      "post": {
         "tags": [
-          "accounts"
+          "allocations"
         ],
-        "summary": "Get history of transfers to allocations in an account",
+        "summary": "Add allocation to an account",
         "description": "",
-        "operationId": "getAllocationsHistory",
+        "operationId": "addAllocation",
         "consumes": [
           "application/json"
         ],
@@ -227,12 +231,22 @@
           "application/json"
         ],
         "parameters": [{
-          "name": "id",
-          "in": "path",
-          "description": "Account id to get the transactions history",
-          "required": true,
-          "type": "string"
-        }],
+            "name": "id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters for adding and updating allocation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/AddAllocation"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -240,10 +254,7 @@
               "type": "object",
               "properties": {
                 "d": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/AllocationHistory"
-                  }
+                  "$ref": "#/definitions/Account"
                 }
               }
             }
@@ -254,14 +265,14 @@
         }
       }
     },
-    "/accounts/bycashtag/{cash_tag}/allocations/transactions": {
-      "get": {
+    "/accounts/{id}/allocations/{allocation_id}": {
+      "put": {
         "tags": [
-          "accounts"
+          "allocations"
         ],
-        "summary": "Get history of transfers to allocations in an account",
+        "summary": "Edit allocation of an account",
         "description": "",
-        "operationId": "getAllocationsHistoryByCashTag",
+        "operationId": "editAllocation",
         "consumes": [
           "application/json"
         ],
@@ -269,12 +280,29 @@
           "application/json"
         ],
         "parameters": [{
-          "name": "cash_tag",
-          "in": "path",
-          "description": "Account cash tag to get the transactions history",
-          "required": true,
-          "type": "string"
-        }],
+            "name": "id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Parameters for adding and updating allocation",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/EditAllocation"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "successful operation",
@@ -282,10 +310,52 @@
               "type": "object",
               "properties": {
                 "d": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/AllocationHistory"
-                  }
+                  "$ref": "#/definitions/Account"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "allocations"
+        ],
+        "summary": "Delete allocation of an account",
+        "description": "",
+        "operationId": "deleteAllocation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+            "name": "id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "allocation_id",
+            "in": "path",
+            "description": "Id of an account",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "$ref": "#/definitions/Account"
                 }
               }
             }
@@ -299,7 +369,7 @@
     "/accounts/{id}/allocations/{allocation_id}/transactions": {
       "post": {
         "tags": [
-          "transactions"
+          "allocations"
         ],
         "summary": "Transfer amount to allocation",
         "description": "",
@@ -355,7 +425,7 @@
     "/accounts/{id}/allocations/{allocation_id}/withdrawal": {
       "post": {
         "tags": [
-          "transactions"
+          "allocations"
         ],
         "summary": "Transfer amount from allocation to wallet",
         "description": "",
@@ -398,6 +468,90 @@
               "properties": {
                 "d": {
                   "$ref": "#/definitions/Account"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/accounts/{id}/allocations/transactions": {
+      "get": {
+        "tags": [
+          "allocations"
+        ],
+        "summary": "Get history of transfers to allocations in an account",
+        "description": "",
+        "operationId": "getAllocationsHistory",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "id",
+          "in": "path",
+          "description": "Account id to get the transactions history",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AllocationHistory"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/accounts/bycashtag/{cash_tag}/allocations/transactions": {
+      "get": {
+        "tags": [
+          "allocations"
+        ],
+        "summary": "Get history of transfers to allocations in an account",
+        "description": "",
+        "operationId": "getAllocationsHistoryByCashTag",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [{
+          "name": "cash_tag",
+          "in": "path",
+          "description": "Account cash tag to get the transactions history",
+          "required": true,
+          "type": "string"
+        }],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "d": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/AllocationHistory"
+                  }
                 }
               }
             }
@@ -510,156 +664,6 @@
           "required": true,
           "type": "string"
         }],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "d": {
-                  "$ref": "#/definitions/Account"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        }
-      }
-    },
-    "/accounts/{id}/allocations": {
-      "post": {
-        "tags": [
-          "accounts"
-        ],
-        "summary": "Add allocation to an account",
-        "description": "",
-        "operationId": "addAllocation",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [{
-            "name": "id",
-            "in": "path",
-            "description": "Id of an account",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Parameters for adding and updating allocation",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/AddAllocation"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "d": {
-                  "$ref": "#/definitions/Account"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error"
-          }
-        }
-      }
-    },
-    "/accounts/{id}/allocations/{allocation_id}": {
-      "put": {
-        "tags": [
-          "accounts"
-        ],
-        "summary": "Edit allocation of an account",
-        "description": "",
-        "operationId": "editAllocation",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [{
-            "name": "id",
-            "in": "path",
-            "description": "Id of an account",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "allocation_id",
-            "in": "path",
-            "description": "Id of an account",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "description": "Parameters for adding and updating allocation",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/EditAllocation"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "d": {
-                  "$ref": "#/definitions/Account"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "accounts"
-        ],
-        "summary": "Delete allocation of an account",
-        "description": "",
-        "operationId": "deleteAllocation",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [{
-            "name": "id",
-            "in": "path",
-            "description": "Id of an account",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "allocation_id",
-            "in": "path",
-            "description": "Id of an account",
-            "required": true,
-            "type": "string"
-          }
-        ],
         "responses": {
           "200": {
             "description": "successful operation",
